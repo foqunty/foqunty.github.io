@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Run `npm run build` before deployment.
+Run `npm run build` before deployment. `source.html` is the Vite entry template; the root `index.html` and `assets/` are built output mirrored for the repository's branch-based Pages setting.
 
 ## Adding projects
 
