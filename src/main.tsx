@@ -1,36 +1,128 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Home, UserRound, Library, Shapes, Github, ArrowUpRight, Play, Pause, SkipBack, SkipForward, ListMusic, ChevronRight, X, Code2, Shield, Disc3, Volume2 } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Check, ChevronRight, Command, Copy, FileCode2, Folder, Github, Shield, Terminal, X } from 'lucide-react';
 import { projects, type Project } from './data/projects';
+import { profile } from './data/profile';
 import './style.css';
 
-type Page = 'home' | 'about' | 'projects' | 'skills';
-const nav: { id: Page; label: string; icon: typeof Home }[] = [{id:'home',label:'Home',icon:Home},{id:'about',label:'About me',icon:UserRound},{id:'projects',label:'Projects',icon:Library},{id:'skills',label:'Skills',icon:Shapes}];
-const github = 'https://github.com/foqunty';
+const commands = ['help', 'whoami', 'about', 'skills', 'projects', 'github', 'pwd', 'clear'];
+type Kind = 'help' | 'about' | 'skills' | 'projects' | 'github' | 'pwd' | 'unknown';
+type Entry = { id: number; command: string; kind: Kind };
+const navigation = [{ id: 'home', label: '~/home' }, { id: 'about', label: 'about' }, { id: 'skills', label: 'skills' }, { id: 'projects', label: 'projects' }];
 
-function App(){
-  const [page,setPage]=useState<Page>('home');
-  const [selected,setSelected]=useState<Project|null>(null);
-  const [playing,setPlaying]=useState(false);
-  const [expanded,setExpanded]=useState(false);
-  const [progress,setProgress]=useState(0);
-  const index=selected?projects.findIndex(p=>p.id===selected.id):-1;
-  useEffect(()=>{if(!playing||!selected)return;const timer=window.setInterval(()=>setProgress(p=>p>=100?0:p+1),180);return()=>window.clearInterval(timer)},[playing,selected]);
-  function navigate(to:Page){setPage(to);setExpanded(false);window.scrollTo({top:0,behavior:'smooth'})}
-  function select(p:Project){setSelected(p);setPlaying(true);setProgress(0);setPage('projects');setExpanded(true)}
-  function adjacent(step:number){if(!projects.length)return;const next=projects[(index+step+projects.length)%projects.length];select(next)}
-  const details=selected && <div className="details"><div className="detail-heading"><div className="art large">{selected.artwork?<img src={selected.artwork} alt=""/>:<Code2 size={54}/>}</div><div><span className="eyebrow">PROJECT / {selected.category}</span><h2>{selected.name}</h2><p>{selected.description}</p></div></div>{selected.problem&&<section><h3>The idea</h3><p>{selected.problem}</p></section>}{selected.features?.length? <section><h3>Features</h3><ul>{selected.features.map(f=><li key={f}>{f}</li>)}</ul></section>:null}<section><h3>Built with</h3><div className="tags">{selected.technologies.map(t=><span key={t}>{t}</span>)}</div></section>{selected.screenshots?.length?<div className="screenshots">{selected.screenshots.map(s=><img key={s} src={s} alt={`${selected.name} screenshot`} loading="lazy"/>)}</div>:null}<div className="links">{selected.githubUrl&&<a href={selected.githubUrl} target="_blank" rel="noopener noreferrer">Repository <ArrowUpRight size={16}/></a>}{selected.demoUrl&&<a href={selected.demoUrl} target="_blank" rel="noopener noreferrer">Live site <ArrowUpRight size={16}/></a>}</div></div>;
-  return <div className="app"><aside className="sidebar"><button className="brand" onClick={()=>navigate('home')} aria-label="FOQUNTY home"><span className="brand-icon">F<span>•</span></span><span>FOQUNTY</span></button><div className="nav-label">DISCOVER</div><nav aria-label="Main navigation">{nav.map(({id,label,icon:Icon})=><button key={id} className={`nav-item ${page===id?'active':''}`} onClick={()=>navigate(id)} aria-current={page===id?'page':undefined}><Icon size={19} strokeWidth={1.8}/><span>{label}</span></button>)}</nav><div className="sidebar-bottom"><span className="tiny-line"/><p>A place for the work<br/>still in progress.</p><a href={github} target="_blank" rel="noopener noreferrer"><Github size={18}/> GitHub <ArrowUpRight size={14}/></a></div></aside>
-  <div className="workspace"><header className="topbar"><span className="breadcrumb"><span className="status-dot"/> FOQUNTY / <strong>{page.toUpperCase()}</strong></span><a href={github} target="_blank" rel="noopener noreferrer" className="top-link">View GitHub <ArrowUpRight size={15}/></a></header><main key={page}>
-    {page==='home'&&<><div className="hero"><div className="hero-copy"><span className="eyebrow"><span className="wave-icon">▥</span> THE ARTIST PROFILE</span><h1>Sedat<br/><em>Çoban.</em></h1><p>Computer Engineering Student exploring software through C++, C#, and Python. Currently curious about cybersecurity and everything there is to learn.</p><div className="hero-actions"><button className="primary" onClick={()=>navigate('projects')}><Play size={19} fill="currentColor"/> Explore projects</button><button className="secondary" onClick={()=>navigate('about')}>About me <ArrowUpRight size={17}/></button></div></div><div className="hero-art" aria-hidden="true"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orbit orbit-three"/><div className="monogram">SC<span>.</span></div><span className="art-caption">01 — THE BEGINNING</span></div></div><div className="section-head"><div><span className="eyebrow">YOUR NEXT LISTEN</span><h2>Explore the library<span className="accent">.</span></h2></div><button className="text-link" onClick={()=>navigate('projects')}>Open library <ChevronRight size={17}/></button></div><button className="feature-card" onClick={()=>navigate('projects')}><div className="feature-art"><Disc3 size={42} strokeWidth={1}/></div><div><span className="eyebrow">PROJECT COLLECTION</span><h3>The work, as it happens.</h3><p>Projects I choose to share will live here. The first release is still ahead.</p></div><ArrowUpRight className="feature-arrow" size={24}/></button><div className="section-head smaller"><div><span className="eyebrow">IN THE MIX</span><h2>Current frequencies<span className="accent">.</span></h2></div></div><div className="skill-preview"><div><Code2 size={20}/><span>C++</span></div><div><Code2 size={20}/><span>C#</span></div><div><Code2 size={20}/><span>Python</span></div><div><Shield size={20}/><span>Cybersecurity <small>Learning focus</small></span></div></div></>}
-    {page==='about'&&<div className="page-content"><span className="eyebrow">01 / ABOUT THE ARTIST</span><div className="page-title"><h1>Behind the<br/><em>code.</em></h1><div className="page-mark">SC<span>.</span></div></div><div className="bio-layout"><div className="bio-quote">“I’m still learning, building, and figuring out what I want to make next.”</div><div className="bio-copy"><span className="eyebrow">SEDAT ÇOBAN / BIOGRAPHY</span><h2>Curiosity is the starting point.</h2><p>I’m a Computer Engineering Student developing my programming skills through C++, C#, and Python. I enjoy exploring technology, building software, and learning how things work beneath the surface.</p><p>Cybersecurity is a current area of interest. This space is a record of what I choose to build and share as I keep learning.</p><a href={github} target="_blank" rel="noopener noreferrer" className="inline-link">Find me on GitHub <ArrowUpRight size={17}/></a></div></div></div>}
-    {page==='skills'&&<div className="page-content"><span className="eyebrow">02 / CURRENT FREQUENCIES</span><div className="page-title"><h1>What I’m<br/><em>exploring.</em></h1></div><p className="lead">Languages I’m working with and an area I’m currently learning about.</p><div className="genre-grid">{[{name:'C++',note:'Programming language',code:'01',tone:'green'},{name:'C#',note:'Programming language',code:'02',tone:'sage'},{name:'Python',note:'Programming language',code:'03',tone:'olive'},{name:'Cybersecurity',note:'Current interest',code:'04',tone:'dark'}].map(s=><div className={`genre ${s.tone}`} key={s.name}><span className="genre-number">{s.code} / 04</span><div className="genre-disc" aria-hidden="true"><span/></div><div><small>{s.note}</small><h2>{s.name}</h2></div></div>)}</div></div>}
-    {page==='projects'&&<div className="page-content"><span className="eyebrow">03 / THE LIBRARY</span><div className="page-title"><h1>Projects in<br/><em>rotation.</em></h1><span className="count">{String(projects.length).padStart(2,'0')} RELEASES</span></div><p className="lead">A collection of software I’ve chosen to share. Select a project to explore its story.</p>{projects.length?<div className="track-list"><div className="track-head"><span>#</span><span>TITLE</span><span>TYPE</span><span>TECHNOLOGIES</span></div>{projects.map((p,i)=><button className={`track ${selected?.id===p.id?'selected':''}`} key={p.id} onClick={()=>select(p)}><span className="track-number">{selected?.id===p.id&&playing?<span className="equalizer"><i/><i/><i/></span>:String(i+1).padStart(2,'0')}</span><span className="track-title"><span className="art mini">{p.artwork?<img src={p.artwork} alt=""/>:<Code2 size={19}/>}</span><span><strong>{p.name}</strong><small>{p.shortDescription}</small></span></span><span className="muted">{p.category}</span><span className="muted">{p.technologies.join(' · ')}</span></button>)}{selected&&details}</div>:<div className="empty"><div className="empty-visual"><div className="empty-disc"><div/></div><span className="empty-cross">✳</span></div><div className="empty-copy"><span className="eyebrow">SIDE A / COMING SOON</span><h2>Nothing in the<br/>library. <em>Yet.</em></h2><p>Projects will appear here as they’re released. Good things take time to build.</p><div className="empty-rule"><span>01</span><div/><span>∞</span></div></div></div>}</div>}
-  </main><footer className="main-footer">© {new Date().getFullYear()} FOQUNTY <span>MADE TO KEEP EVOLVING</span></footer></div>
-  <div className="player"><div className="player-info"><span className="art player-art">{selected?(selected.artwork?<img src={selected.artwork} alt=""/>:<Code2 size={20}/>):<span className="placeholder-glyph">F.</span>}</span><div><strong>{selected?.name??'Your code. Your sound.'}</strong><small>{selected?selected.category:'The next project starts here'}</small></div></div><div className="player-center"><div className="controls"><button aria-label="Previous project" disabled={!projects.length} onClick={()=>adjacent(-1)}><SkipBack size={17} fill="currentColor"/></button><button className="play-control" aria-label={playing?'Pause project story':'Play project story'} disabled={!selected} onClick={()=>setPlaying(!playing)}>{playing?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button><button aria-label="Next project" disabled={!projects.length} onClick={()=>adjacent(1)}><SkipForward size={17} fill="currentColor"/></button></div><div className="progress"><span>{selected?`${Math.floor(progress)}%`:'—'}</span><div className="progress-track"><div style={{width:`${progress}%`}}/></div><span>{selected?'Story':'—'}</span></div></div><div className="player-right"><span className="visual-bars" aria-hidden="true"><i/><i/><i/><i/></span>{selected?<button onClick={()=>setExpanded(true)} aria-label="View project details"><ListMusic size={19}/><span>Details</span></button>:<span className="player-hint"><Volume2 size={17}/> PROJECT PLAYER</span>}</div></div>
-  <nav className="mobile-nav" aria-label="Mobile navigation">{nav.map(({id,label,icon:Icon})=><button key={id} onClick={()=>navigate(id)} className={page===id?'active':''} aria-current={page===id?'page':undefined}><Icon size={21}/><span>{label}</span></button>)}</nav>
-  {expanded&&selected&&<div className="modal-backdrop" onClick={()=>setExpanded(false)}><div className="modal" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} onClick={e=>e.stopPropagation()}><button className="close" onClick={()=>setExpanded(false)} aria-label="Close project details"><X size={22}/></button>{details}</div></div>}
-  </div>
+function Prompt({ compact = false }: { compact?: boolean }) {
+  return <span className="prompt" aria-hidden="true"><span>{compact ? '~' : 'foqunty@portfolio'}</span>{!compact && <span className="prompt-path">:~</span>}<span className="prompt-dollar">$</span></span>;
 }
 
-createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);
+function CommandOutput({ kind }: { kind: Kind }) {
+  if (kind === 'help') return <div className="help-output">{[['whoami', 'A quick introduction'], ['about', 'A little more about me'], ['skills', 'What I’m working with'], ['projects', 'The project directory'], ['github', 'Find me on GitHub'], ['pwd', 'Where you are'], ['clear', 'Start with a clean terminal']].map(([name, description]) => <div key={name}><span>{name}</span><span>{description}</span></div>)}</div>;
+  if (kind === 'about') return <div className="identity-output"><strong>{profile.name}</strong><span>{profile.role}</span><p>{profile.bio}</p></div>;
+  if (kind === 'skills') return <div className="help-output">{profile.skills.map(skill => <div key={skill.name}><span>{skill.name}</span><span>{skill.kind}</span></div>)}</div>;
+  if (kind === 'projects') return projects.length ? <div className="project-output">{projects.map(project => <a key={project.id} href="#projects">{project.name} <ArrowUpRight size={12} /></a>)}</div> : <div><span className="output-muted">~/projects/</span><p>No published projects here yet.<br />The directory is ready for what comes next.</p></div>;
+  if (kind === 'github') return <a className="terminal-link" href={profile.github} target="_blank" rel="noopener noreferrer">github.com/foqunty <ArrowUpRight size={13} /></a>;
+  if (kind === 'pwd') return <span>/home/foqunty/portfolio</span>;
+  return <span className="unknown-output">Command not found. Type <strong>help</strong> to see what’s available.</span>;
+}
+
+function InteractiveTerminal() {
+  const [entries, setEntries] = useState<Entry[]>([{ id: 0, command: 'whoami', kind: 'about' }]);
+  const [value, setValue] = useState('');
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [announcement, setAnnouncement] = useState('');
+  const [copied, setCopied] = useState(false);
+  const input = useRef<HTMLInputElement>(null);
+  const output = useRef<HTMLDivElement>(null);
+  const sequence = useRef(1);
+  const copyTimeout = useRef<number | undefined>(undefined);
+  useEffect(() => { if (output.current) output.current.scrollTop = output.current.scrollHeight; }, [entries]);
+  useEffect(() => {
+    function focusTerminal(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey) { event.preventDefault(); input.current?.focus(); }
+    }
+    document.addEventListener('keydown', focusTerminal);
+    return () => { document.removeEventListener('keydown', focusTerminal); window.clearTimeout(copyTimeout.current); };
+  }, []);
+  function run(raw: string) {
+    const command = raw.trim().slice(0, 160);
+    if (!command) return;
+    const normalized = command.toLowerCase().replace(/\s+/g, ' ');
+    setHistory(previous => [command, ...previous].slice(0, 30));
+    setHistoryIndex(-1);
+    setValue('');
+    if (normalized === 'clear') { setEntries([]); setAnnouncement('Terminal cleared.'); return; }
+    const kind: Kind = ['whoami', 'about', 'cat about.txt'].includes(normalized) ? 'about'
+      : ['skills', 'cat skills.json'].includes(normalized) ? 'skills'
+      : ['projects', 'ls', 'ls projects', 'ls projects/', 'ls -la projects/'].includes(normalized) ? 'projects'
+      : normalized === 'help' ? 'help' : normalized === 'github' ? 'github' : normalized === 'pwd' ? 'pwd' : 'unknown';
+    const id = sequence.current++;
+    setEntries(previous => [...previous.slice(-29), { id, command, kind }]);
+    setAnnouncement(kind === 'unknown' ? 'Command not found. Type help for available commands.' : `${command} completed. Output is in the terminal history.`);
+  }
+  async function copyProfile() {
+    try {
+      await navigator.clipboard.writeText(`${profile.name}\n${profile.role}\n${profile.github}`);
+      setCopied(true); setAnnouncement('Public profile copied.');
+      window.clearTimeout(copyTimeout.current);
+      copyTimeout.current = window.setTimeout(() => setCopied(false), 2000);
+    } catch { setAnnouncement('Could not copy. You can select the profile text in the terminal.'); }
+  }
+  return <section className="terminal-window" aria-labelledby="terminal-title">
+    <div className="terminal-titlebar"><span className="window-dots" aria-hidden="true"><i /><i /><i /></span><span id="terminal-title"><Terminal size={13} /> foqunty — portfolio</span><button className="icon-button" onClick={copyProfile} aria-label={copied ? 'Profile copied' : 'Copy public profile'} title="Copy public profile">{copied ? <Check size={14} /> : <Copy size={14} />}</button></div>
+    <div className="terminal-tab"><Terminal size={13} /><span>~/portfolio</span><span className="tab-index">01</span></div>
+    <div className="terminal-body"><div className="terminal-welcome"><span>Welcome to my corner of the internet.</span><span>Type <strong>help</strong> to look around.</span></div>
+      <div className="terminal-history" ref={output} role="region" aria-label="Terminal command history" tabIndex={0}>{entries.length ? entries.map(entry => <div className="terminal-entry" key={entry.id}><div className="command-echo"><Prompt compact /><span>{entry.command}</span></div><div className="command-output"><CommandOutput kind={entry.kind} /></div></div>) : <span className="output-muted">A clean slate. What’s next?</span>}</div>
+      <form className="terminal-input-line" onSubmit={event => { event.preventDefault(); run(value); }}><label htmlFor="terminal-command"><Prompt compact /><span className="sr-only">Terminal command</span></label><input id="terminal-command" ref={input} value={value} onChange={event => { setValue(event.target.value); setHistoryIndex(-1); }} autoComplete="off" autoCapitalize="off" spellCheck={false} maxLength={160} placeholder="type a command…" aria-describedby="terminal-instructions" onKeyDown={event => {
+        if (event.key === 'ArrowUp' && history.length) { event.preventDefault(); const next = Math.min(historyIndex + 1, history.length - 1); setHistoryIndex(next); setValue(history[next]); }
+        if (event.key === 'ArrowDown') { event.preventDefault(); const next = Math.max(historyIndex - 1, -1); setHistoryIndex(next); setValue(next < 0 ? '' : history[next]); }
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'l') { event.preventDefault(); run('clear'); }
+        if (event.key === 'Tab' && value.trim()) { const matches = commands.filter(command => command.startsWith(value.trim().toLowerCase())); if (matches.length === 1) { event.preventDefault(); setValue(matches[0]); } }
+        if (event.key === 'Escape') input.current?.blur();
+      }} /><button className="execute-button" type="submit" aria-label="Run command" disabled={!value.trim()}><ChevronRight size={18} /></button></form><span className="sr-only" role="status">{announcement}</span>
+    </div>
+    <div className="terminal-quick"><span>try</span>{['help', 'skills', 'projects'].map(command => <button key={command} onClick={() => run(command)}>{command}</button>)}</div>
+    <div className="terminal-bottom" id="terminal-instructions"><span><span className="green-dot" /> interactive portfolio</span><span><kbd>↑</kbd><kbd>↓</kbd> history <span className="tab-hint">· TAB complete</span></span></div>
+  </section>;
+}
+
+function SectionHeading({ command, title, count }: { command: string; title: string; count: string }) {
+  return <div className="section-heading"><div><span className="section-command"><span className="green-text">~ $</span> {command}</span><h2>{title}<span className="green-text">.</span></h2></div><span className="section-count">{count}</span></div>;
+}
+
+function ProjectDetails({ project }: { project: Project }) {
+  const safeLink = (value?: string) => value && /^https:\/\//i.test(value) ? value : undefined;
+  return <div className="project-details"><h4>{project.name}</h4><p>{project.description}</p>{project.problem && <p>{project.problem}</p>}{project.features?.length ? <ul>{project.features.map(feature => <li key={feature}>{feature}</li>)}</ul> : null}<div className="project-tags">{project.technologies.map(technology => <span key={technology}>{technology}</span>)}</div><div className="project-links">{safeLink(project.githubUrl) && <a href={safeLink(project.githubUrl)} target="_blank" rel="noopener noreferrer">Source code <ArrowUpRight size={14} /></a>}{safeLink(project.demoUrl) && <a href={safeLink(project.demoUrl)} target="_blank" rel="noopener noreferrer">Live site <ArrowUpRight size={14} /></a>}</div></div>;
+}
+
+function App() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive] = useState('home');
+  useEffect(() => {
+    const observer = new IntersectionObserver(records => {
+      const visible = records.filter(record => record.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]) setActive(visible[0].target.id);
+    }, { rootMargin: '-15% 0px -55% 0px', threshold: [0, .1, .3] });
+    for (const item of navigation) { const element = document.getElementById(item.id); if (element) observer.observe(element); }
+    return () => observer.disconnect();
+  }, []);
+  const navLinks = (location: string) => navigation.map(item => <a href={`#${item.id}`} key={`${location}-${item.id}`} className={active === item.id ? 'active' : ''} aria-current={active === item.id ? 'location' : undefined} onClick={() => { setActive(item.id); setMenuOpen(false); }}>{item.label}</a>);
+  return <>
+    <a className="skip-link" href="#main">Skip to content</a>
+    <header className="site-header"><div className="header-inner"><a className="brand" href="#home" aria-label="FOQUNTY home"><span className="brand-mark"><Terminal size={19} strokeWidth={2.4} /></span><span>foqunty<span className="green-text">_</span></span></a><nav className="desktop-nav" aria-label="Main navigation">{navLinks('desktop')}</nav><a className="header-github" href={profile.github} target="_blank" rel="noopener noreferrer"><Github size={16} /><span>GitHub</span><ArrowUpRight size={14} /></a><button className="menu-toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={20} /> : <Command size={20} />}</button></div>{menuOpen && <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation" onKeyDown={event => { if (event.key === 'Escape') { setMenuOpen(false); document.querySelector<HTMLButtonElement>('.menu-toggle')?.focus(); } }}>{navLinks('mobile')}</nav>}</header>
+    <main id="main">
+      <section className="hero section-container" id="home"><div className="hero-copy"><span className="session-label"><span className="green-dot" /> PERSONAL PORTFOLIO <span className="label-divider">/</span> v2.0</span><div className="hero-command"><Prompt /><span>whoami</span></div><h1>Sedat<br /><span>Çoban<span className="name-period">.</span></span><span className="hero-cursor" aria-hidden="true">_</span></h1><p className="role-label"><span aria-hidden="true">↳</span> {profile.role}</p><p className="hero-description">{profile.intro}<br /><span>Code, curiosity, and a growing interest in cybersecurity.</span></p><div className="hero-actions"><a className="primary-button" href="#projects"><Folder size={16} /> Explore projects <ArrowUpRight size={16} /></a><a className="secondary-button" href="#about">cat about.txt <ArrowDown size={15} /></a></div><div className="hero-meta"><span><span className="meta-square" /> ALWAYS LEARNING</span><span className="hero-shortcut">press <kbd>/</kbd> to use the terminal</span></div></div><div className="hero-terminal"><InteractiveTerminal /><span className="terminal-caption"><span>01 / THE INTERACTIVE PART</span><span>Go ahead. Try a command.</span></span></div></section>
+      <div className="stack-strip"><div className="section-container stack-inner"><span className="stack-label">CURRENT TOOLKIT</span>{['C++', 'C#', 'Python', 'Linux'].map(name => <span className="stack-item" key={name}><span className="stack-plus">+</span> {name}</span>)}<span className="stack-interest"><Shield size={14} /> cybersecurity<span className="stack-learning"> / exploring</span></span></div></div>
+      <section className="section-container content-section about-section" id="about"><SectionHeading command="cat about.txt" title="A little context" count="01" /><div className="about-grid"><div className="about-statement">Curiosity first.<br />Code follows<span className="green-text">.</span></div><div className="about-copy"><p>{profile.bio}</p><p>This is my space to share what I choose to build and the things I learn along the way. Still learning. Still figuring things out. Always moving forward.</p><a href={profile.github} target="_blank" rel="noopener noreferrer">Find me on GitHub <ArrowUpRight size={15} /></a></div></div></section>
+      <section className="section-container content-section" id="skills"><SectionHeading command="cat skills.json" title="The current toolkit" count="05 ENTRIES" /><p className="section-description">Languages I work with. Systems I’m learning. Questions I keep asking.</p><div className="skills-grid">{profile.skills.map((skill, index) => <article className={`skill-card ${skill.extension === 'sec' ? 'security-card' : ''}`} key={skill.name}><div className="skill-card-top"><span className="file-icon">{skill.extension === 'sec' ? <Shield size={22} /> : skill.extension === 'sh' ? <Terminal size={22} /> : <FileCode2 size={22} />}</span><span className="skill-file">.{skill.extension}</span></div><div><span className="skill-number">0{index + 1}</span><h3>{skill.name}</h3><p>{skill.description}</p></div><div className="skill-bottom"><span>{skill.tag}</span><span>{skill.extension === 'sec' ? '↗' : '·'}</span></div></article>)}</div></section>
+      <section className="section-container content-section projects-section" id="projects"><SectionHeading command="ls -la projects/" title="The project directory" count={`${String(projects.length).padStart(2, '0')} PUBLISHED`} /><p className="section-description">A place for the work I choose to put out into the world.</p>{projects.length ? <div className="project-list">{projects.map((project, index) => <article key={project.id}><button className="project-row" onClick={() => setSelected(selected === project.id ? null : project.id)} aria-expanded={selected === project.id} aria-controls={`project-${project.id}`}><span className="project-index">{String(index + 1).padStart(2, '0')}</span><Folder size={22} /><span><strong>{project.name}</strong><small>{project.shortDescription}</small></span><span className="project-category">{project.category}</span><ChevronRight className={selected === project.id ? 'rotated' : ''} size={18} /></button>{selected === project.id && <div id={`project-${project.id}`}><ProjectDetails project={project} /></div>}</article>)}</div> : <div className="empty-projects"><div className="directory-symbol" aria-hidden="true"><Folder size={49} strokeWidth={1} /><span>+</span></div><span className="empty-path">~/projects/</span><h3>A clean directory.<br />Room for what’s next.</h3><p>No published projects here yet.<br />When there’s something to share, it’ll live right here.</p><span className="directory-output"><span className="green-text">➜</span> 0 projects <span className="output-muted">· more to come</span></span></div>}</section>
+      <section className="section-container contact-section"><div><span className="section-command"><span className="green-text">~ $</span> open github</span><h2>Follow the next commit<span className="green-text">.</span></h2><p>The learning continues. You can find me on GitHub.</p></div><a className="primary-button" href={profile.github} target="_blank" rel="noopener noreferrer"><Github size={17} /> github.com/foqunty <ArrowUpRight size={16} /></a></section>
+    </main>
+    <footer className="site-footer"><div className="section-container footer-inner"><a className="footer-brand" href="#home"><Terminal size={16} /> foqunty<span className="green-text">_</span></a><span>© {new Date().getFullYear()} Sedat Çoban</span><a href="#home">Back to top <ArrowUpRight size={13} /></a></div></footer>
+    <div className="statusbar"><span><span className="green-dot" /> portfolio / main</span><span>Built with curiosity<span className="status-right">UTF-8</span></span></div>
+  </>;
+}
+
+createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
