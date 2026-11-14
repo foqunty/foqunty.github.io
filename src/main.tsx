@@ -6,7 +6,7 @@ import { profile } from './data/profile';
 import './style.css';
 
 const commands = ['help', 'whoami', 'about', 'skills', 'projects', 'github', 'pwd', 'clear'];
-type Kind = 'help' | 'about' | 'skills' | 'projects' | 'github' | 'pwd' | 'unknown';
+type Kind = 'help' | 'whoami' | 'about' | 'skills' | 'projects' | 'github' | 'pwd' | 'unknown';
 type Entry = { id: number; command: string; kind: Kind };
 const navigation = [{ id: 'home', label: '~/home' }, { id: 'about', label: 'about' }, { id: 'skills', label: 'skills' }, { id: 'projects', label: 'projects' }];
 
@@ -16,16 +16,17 @@ function Prompt({ compact = false }: { compact?: boolean }) {
 
 function CommandOutput({ kind }: { kind: Kind }) {
   if (kind === 'help') return <div className="help-output">{[['whoami', 'A quick introduction'], ['about', 'A little more about me'], ['skills', 'What I’m working with'], ['projects', 'The project directory'], ['github', 'Find me on GitHub'], ['pwd', 'Where you are'], ['clear', 'Start with a clean terminal']].map(([name, description]) => <div key={name}><span>{name}</span><span>{description}</span></div>)}</div>;
-  if (kind === 'about') return <div className="identity-output"><strong>{profile.name}</strong><span>{profile.role}</span><p>{profile.bio}</p></div>;
-  if (kind === 'skills') return <div className="help-output">{profile.skills.map(skill => <div key={skill.name}><span>{skill.name}</span><span>{skill.kind}</span></div>)}</div>;
-  if (kind === 'projects') return projects.length ? <div className="project-output">{projects.map(project => <a key={project.id} href="#projects">{project.name} <ArrowUpRight size={12} /></a>)}</div> : <div><span className="output-muted">~/projects/</span><p>No published projects here yet.<br />The directory is ready for what comes next.</p></div>;
+  if (kind === 'whoami') return <div className="identity-output"><strong>{profile.name}</strong><span>{profile.role} · @foqunty</span><p>I build web projects, learn by experimenting, and explore how software works and how it can break. Currently interested in cybersecurity, with hands-on practice in C++, C#, Python and Linux.</p></div>;
+  if (kind === 'about') return <div className="identity-output"><strong>About me</strong><span>Learning by building</span><p>I'm a computer engineering student interested in software development and cybersecurity. My first published web app is a Pomodoro focus timer. I enjoy turning small ideas into working projects, testing what I build, and improving things as I learn.</p></div>;
+  if (kind === 'skills') return <div className="help-output">{profile.skills.map(skill => <div key={skill.name}><span>{skill.name}</span><span>{skill.description}</span></div>)}</div>;
+  if (kind === 'projects') return projects.length ? <div className="project-output"><span className="output-muted">~/projects/</span>{projects.map(project => <div key={project.id}><strong>{project.name}</strong><p>{project.shortDescription}</p><a href={project.demoUrl || project.githubUrl || '#projects'} target="_blank" rel="noopener noreferrer">{project.demoUrl ? 'Open live app' : 'View source'} <ArrowUpRight size={12} /></a></div>)}</div> : <div><span className="output-muted">~/projects/</span><p>No published projects here yet.<br />The directory is ready for what comes next.</p></div>;
   if (kind === 'github') return <a className="terminal-link" href={profile.github} target="_blank" rel="noopener noreferrer">github.com/foqunty <ArrowUpRight size={13} /></a>;
   if (kind === 'pwd') return <span>/home/foqunty/portfolio</span>;
   return <span className="unknown-output">Command not found. Type <strong>help</strong> to see what’s available.</span>;
 }
 
 function InteractiveTerminal() {
-  const [entries, setEntries] = useState<Entry[]>([{ id: 0, command: 'whoami', kind: 'about' }]);
+  const [entries, setEntries] = useState<Entry[]>([{ id: 0, command: 'whoami', kind: 'whoami' }]);
   const [value, setValue] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -53,7 +54,7 @@ function InteractiveTerminal() {
     setHistoryIndex(-1);
     setValue('');
     if (normalized === 'clear') { setEntries([]); setAnnouncement('Terminal cleared.'); return; }
-    const kind: Kind = ['whoami', 'about', 'cat about.txt'].includes(normalized) ? 'about'
+    const kind: Kind = normalized === 'whoami' ? 'whoami' : ['about', 'cat about.txt'].includes(normalized) ? 'about'
       : ['skills', 'cat skills.json'].includes(normalized) ? 'skills'
       : ['projects', 'ls', 'ls projects', 'ls projects/', 'ls -la projects/'].includes(normalized) ? 'projects'
       : normalized === 'help' ? 'help' : normalized === 'github' ? 'github' : normalized === 'pwd' ? 'pwd' : 'unknown';
