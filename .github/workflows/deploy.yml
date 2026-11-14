@@ -3,13 +3,16 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,9 +24,25 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+      # Keep the repository-root Pages files in sync as well, in case
+      # GitHub Pages is configured to publish from main / (root).
+      - name: Sync the built site to repository root
+        run: |
+          cp dist/index.html index.html
+          rm -rf assets
+          cp -R dist/assets assets
+          if [ -f dist/favicon.svg ]; then cp dist/favicon.svg favicon.svg; fi
+          git add -A -- index.html assets favicon.svg
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "build: synchronize GitHub Pages site assets"
+            git push origin HEAD:main
+          fi
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+
   deploy:
     environment:
       name: github-pages
