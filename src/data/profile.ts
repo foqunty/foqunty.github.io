@@ -4,6 +4,7 @@ export const profile = {
   username: 'foqunty',
   role: 'Computer Engineering Student',
   github: 'https://github.com/foqunty',
+  email: 'sedatcoban655@gmail.com',
   intro: 'Learning how to build things. And how they break.',
   bio: 'I’m a Computer Engineering Student working with C++, C#, and Python. I’m learning Linux fundamentals and exploring cybersecurity — following my curiosity, one command at a time.',
   skills: [
