@@ -1,4 +1,4 @@
-// Public content only. Projects need Sedat's explicit approval in projects.ts.
+// My public info and skills.
 export const profile = {
   name: 'Sedat Çoban',
   username: 'foqunty',

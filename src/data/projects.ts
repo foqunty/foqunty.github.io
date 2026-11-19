@@ -1,6 +1,6 @@
 export interface Project { id: string; name: string; shortDescription: string; description: string; technologies: string[]; category: string; artwork?: string; screenshots?: string[]; githubUrl?: string; demoUrl?: string; releaseDate?: string; features?: string[]; problem?: string }
 
-// Only showcase projects explicitly selected for this portfolio.
+// Projects shown on the site.
 export const projects: Project[] = [
   {
     id: 'pomodoro-app',
