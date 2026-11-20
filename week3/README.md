@@ -8,16 +8,22 @@ Bu hafta sadece görsel kısmını yaptım (3 fotoğraf modeli). Metin modelleri
 
 ## Puanlama ölçütü (önceden yazdım, her biri 1-5)
 
-- **Sadakat:** kırmızı şemsiye, vapur, Galata Kulesi, yağmur, ıslak zemin yansıması ve yazısız defter var mı?
+- **Sadakat:** kırmızı şemsiye, vapur, Galata Kulesi, yağmur ve ıslak zemin yansıması var mı?
+- **Yazı:** prompt'ta "no text anywhere" dedim, defterin ya da başka bir yerin üstünde yazı çıkmış mı?
 - **Yüz/detay:** yüz ve eller doğal mı, görüntü gerçekçi bir fotoğraf gibi mi?
+- **Hareket ve tutarlılık:** bunlar video için, video yapmadığım için puanlamadım.
+
+Aynı oran: üç modelde de 16:9 çıktı.
 
 ## Sonuçlar
 
-| Model | Sadakat | Yüz/detay | Toplam /10 |
-|---|---|---|---|
-| Gemini | 5 | 5 | **10** |
-| ChatGPT | 4 | 4 | **8** |
-| Claude | 2 | 2 | **4** |
+| Model | Sadakat | Yazı | Yüz/detay | Hareket | Tutarlılık | Toplam /15 |
+|---|---|---|---|---|---|---|
+| Gemini | 5 | 5 | 5 | - | - | **15** |
+| ChatGPT | 4 | 5 | 4 | - | - | **13** |
+| Claude | 2 | 5 | 2 | - | - | **9** |
+
+Toplam sadakat, yazı ve yüz/detayın toplamı. Hareket ve tutarlılık video olmadığı için boş.
 
 **ChatGPT** ![ChatGPT](gorseller/chatgpt.jpg)
 
