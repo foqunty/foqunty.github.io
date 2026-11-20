@@ -15,8 +15,8 @@ Bu hafta sadece görsel kısmını yaptım (3 fotoğraf modeli). Metin modelleri
 
 | Model | Sadakat | Yüz/detay | Toplam /10 |
 |---|---|---|---|
-| ChatGPT | 5 | 5 | **10** |
-| Gemini | 4 | 4 | **8** |
+| Gemini | 5 | 5 | **10** |
+| ChatGPT | 4 | 4 | **8** |
 | Claude | 2 | 2 | **4** |
 
 **ChatGPT** ![ChatGPT](gorseller/chatgpt.jpg)
@@ -27,4 +27,4 @@ Bu hafta sadece görsel kısmını yaptım (3 fotoğraf modeli). Metin modelleri
 
 ## Yorum
 
-Üç modele de aynı prompt'u verdim. ChatGPT en iyisiydi: kırmızı şemsiye, vapur, Galata Kulesi, yağmur ve ıslak zemindeki yansımalar hepsi vardı, yüz ve eller de doğal duruyordu. Gemini de gerçekten fotoğraf gibi bir şey çıkardı ama Galata Kulesi çok küçük kaldı, şemsiye kadrajdan taştı ve yüz yarım göründü. Claude'un çıktısı en kötüsüydü, çünkü gerçekçi fotoğraf yerine düz bir çizim yaptı, kule Galata'ya değil de fenere benziyordu ve kişinin yüzü yoktu. Üçünde de defterin üstüne yazı koymadılar, bu kısmı hepsi doğru yaptı. Beni şaşırtan şey Claude'un bir görsel modeli olmaması, çizimi muhtemelen kodla yaptı. O yüzden fotoğraf testinde adil bir karşılaştırma olmadı.
+Üç modele de aynı prompt'u verdim. Bence en iyisi Gemini oldu, çünkü gerçekten çekilmiş bir fotoğraf gibiydi: yağmurdaki ışıklar, ıslak zemin ve kişinin duruşu daha doğaldı, prompt'taki "gerçekçi fotoğraf" isteğine en yakın olan oydu. Küçük eksikleri vardı, Galata Kulesi küçük kaldı ve şemsiye kadrajdan taştı. ChatGPT de çok iyiydi, kırmızı şemsiye, vapur, Galata Kulesi ve yağmur hepsi vardı, ama bana fazla parlak ve sinematik, yani biraz yapay göründü. Claude'un çıktısı en kötüsüydü, çünkü fotoğraf yerine düz bir çizim yaptı, kule Galata'ya değil de fenere benziyordu ve kişinin yüzü yoktu. Üçünde de defterin üstüne yazı koymadılar, bu kısmı hepsi doğru yaptı. Beni şaşırtan şey Claude'un bir görsel modeli olmaması, çizimi muhtemelen kodla yaptı. O yüzden fotoğraf testinde adil bir karşılaştırma olmadı.
