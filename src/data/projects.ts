@@ -6,7 +6,7 @@ export const projects: Project[] = [
     id: 'turkish-summary-benchmark',
     name: 'Turkish Summary Hallucination Benchmark',
     shortDescription: 'Do LLMs keep the numbers, dates and names when they summarize Turkish text? 10 models tested.',
-    description: 'A benchmark I built in the NEXA Fellowship (Week 4). Each question is a Turkish paragraph with three critical facts: a number, a date and a name. A model is correct only if its summary keeps all three and invents nothing. A Python scorer handles Turkish spellings (12 Mart = 12.03, yüzde 45 = %45) and flags made-up numbers and names. I ran 3 Claude models and 7 open models on my Mac with Ollama, then added a memorization trap: real Turkish Wikipedia texts with one fact changed (Malazgirt 1071 → 1074) to see if models trust the text or their memory.',
+    description: 'A benchmark I built to test LLM summaries in Turkish. Each question is a Turkish paragraph with three critical facts: a number, a date and a name. A model is correct only if its summary keeps all three and invents nothing. A Python scorer handles Turkish spellings (12 Mart = 12.03, yüzde 45 = %45) and flags made-up numbers and names. I ran 3 Claude models and 7 open models on my Mac with Ollama, then added a memorization trap: real Turkish Wikipedia texts with one fact changed (Malazgirt 1071 → 1074) to see if models trust the text or their memory.',
     technologies: ['Python', 'Ollama', 'LLM evaluation', 'matplotlib'],
     category: 'AI / EVALUATION',
     githubUrl: 'https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark',

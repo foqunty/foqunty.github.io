@@ -6,7 +6,7 @@ It looks like a terminal because I like working in one. You can type commands li
 
 ## Projects
 
-- **Turkish Summary Hallucination Benchmark**: tests whether 10 LLMs keep numbers, dates and names when summarizing Turkish text (NEXA Week 4). [Source](https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark)
+- **Turkish Summary Hallucination Benchmark**: tests whether 10 LLMs keep numbers, dates and names when summarizing Turkish text. [Source](https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark)
 - **Pomodoro App**: a focus timer I built with React and TypeScript. [Live app](https://pomodoro-app-iota-gules.vercel.app/) · [Source](https://github.com/foqunty/Pomodoro-app)
 
 ## Run it locally
