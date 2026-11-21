@@ -10,6 +10,7 @@ export const projects: Project[] = [
     technologies: ['Python', 'Ollama', 'LLM evaluation', 'matplotlib'],
     category: 'AI / EVALUATION',
     githubUrl: 'https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark',
+    demoUrl: 'https://foqunty.github.io/#/benchmark',
     releaseDate: '2026',
     problem: 'Summaries that silently change a number or a name are dangerous, and there was no small Turkish test for it.',
     features: [
